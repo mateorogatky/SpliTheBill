@@ -1,20 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
+import HomeScreen from './src/homeScreen';
+import AssociateExpenseScreen from './src/associateExpenses';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import expensesSlice from './src/redux/expensesSlices';
+import namesSlice from './src/redux/namesSlices';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
+const store = configureStore({
+  reducer: {
+    expenses: expensesSlice,
+    names: namesSlice,
+    // Agrega otros slices si los tienes
+  },
+});
+
+const Stack = createStackNavigator();
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+    <Provider store={store}>
+        <View style={{ flex: 1 }}>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="AssociateExpense" component={AssociateExpenseScreen} />
+          </Stack.Navigator>
+        </View>
+    </Provider>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
