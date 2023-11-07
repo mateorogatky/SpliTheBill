@@ -18,7 +18,7 @@ const store = configureStore({
 });
 
 const Stack = createStackNavigator();
-
+/* Buenos avances */
 function App() {
   return (
     <NavigationContainer>
