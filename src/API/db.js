@@ -24,6 +24,29 @@ app.post('/api/expenses', async (req, res) => {
   }
 });
 
+// Ruta para eliminar un gasto por su nombre
+app.delete('/api/expenses/:name', async (req, res) => {
+  const name = req.params.name; // Obtén el nombre del gasto desde la URL
+
+  try {
+    // Realiza una consulta SQL para verificar si el gasto existe en la base de datos
+    const expenseExists = await db.oneOrNone('SELECT name FROM expenses WHERE name = $1', name);
+
+    if (expenseExists) {
+      // Si el gasto existe, procede con la eliminación
+      await db.none('DELETE FROM expenses WHERE name = $1', name);
+      res.json({ message: `Expense with name: ${name} successfully removed` });
+    } else {
+      // Si el gasto no existe, devuelve un mensaje de error
+      res.status(404).json({ error: 'The expense does not exist in the database' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete expense' });
+  }
+});
+
+
 // Ruta para obtener la lista de gastos
 app.get('/api/expenses', async (req, res) => {
     try {
